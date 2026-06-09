@@ -35,7 +35,7 @@ if (Directory.Exists(path))
         System.Console.WriteLine(_archivoInfo.ToCsv());
     }
     List<string> csvLines = new List<string>;
-    foreach(var archivos in archivosInfo)
+    foreach(var archivo in archivosInfo)
     {
         Console.WriteLine(archivo.ParaPantalla());
         csvLines.Add(archivo.ToCsv());
