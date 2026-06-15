@@ -1,9 +1,4 @@
-﻿using System.Dynamic;
-using System.IO;
-using System.Runtime.CompilerServices;
-using Microsoft.VisualBasic;
-
-
+﻿using System.IO;
 
 
 Console.WriteLine("Ingrese un path de un directorio para analizar");
@@ -11,6 +6,8 @@ string path = Console.ReadLine();
 if (!Directory.Exists(path))
 {
     do
+
+
     {
             Console.WriteLine("Ingrese un path valido");
             path = Console.ReadLine();
@@ -21,47 +18,44 @@ if (Directory.Exists(path))
 {
     foreach(var file in Directory.GetDirectories(path).ToList())
     {
-        Console.WriteLine($"Carpetas: {file}");
+        Console.WriteLine($"Carpetas: {new DirectoryInfo(file).Name}");
     }
     
-    List<ArchivoInfo> archivosInfo = new List<ArchivoInfo>;
+    List<ArchivoInfo> archivosInfo = new List<ArchivoInfo>();
     foreach(var file in Directory.GetFiles(path).ToList())
     {
-        Console.WriteLine($"Archivos: {file}");
         FileInfo info = new FileInfo(file);
-        Console.WriteLine($"Archivo: {info.Name})"+ "-" + ($"Tamaño: {info.Length} bytes"));
         var _archivoInfo = new ArchivoInfo(info.Name, info.Length, info.LastWriteTime);
         archivosInfo.Add(_archivoInfo);
-        System.Console.WriteLine(_archivoInfo.ToCsv());
     }
-    List<string> csvLines = new List<string>;
+    List<string> csvLines = new List<string>();
     foreach(var archivo in archivosInfo)
     {
         Console.WriteLine(archivo.ParaPantalla());
         csvLines.Add(archivo.ToCsv());
     }
-    File.WriteAllLines("Reporte_archivos.csv", csvLines);
+    File.WriteAllLines(Path.Combine(path, "reporte_archivos.csv"), csvLines);
     
 }
 
 public class ArchivoInfo
 {    
-public string Nombre (get; set;)
-public long Tamanio (get; set;)
-public DateTime UltimaFechaDeModificacion (get; set;)
+public string Nombre {get; set;}
+public double Tamanio {get; set;}
+public DateTime UltimaFechaDeModificacion {get; set;}
 public ArchivoInfo(string name, long length, DateTime LastWriteTime)
     {
         Nombre = name;
-        Tamanio = length;
+        Tamanio = length / 1024.0;
         UltimaFechaDeModificacion = LastWriteTime;
     }
 public string ToCsv()
     {
-        return $("")
+        return $"{Nombre},{Tamanio:0.00},{UltimaFechaDeModificacion}";
     }
 public string ParaPantalla()
     {
-        
+        return $"Archivo: {Nombre} - Tamaño: {Tamanio:0.00} KB";
     }
 }
 
